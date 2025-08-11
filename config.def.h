@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
@@ -14,7 +15,7 @@ static const char *fonts[]          = { "Terminess Nerd Font Propo:style=Bold:si
 static const char dmenufont[]       = "Terminess Nerd Font Propo:size=20";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#412321";
-static char normfgcolor[]           = "#bbbbbb";
+static char normfgcolor[]           = "#bbb222";
 static char selfgcolor[]            = "#eeeeee";
 static char selbordercolor[]        = "#005577";
 static char selbgcolor[]            = "#005577";
@@ -24,7 +25,6 @@ static char *colors[][3] = {
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
  
-
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
@@ -36,6 +36,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+    { "Dunst",    NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -80,9 +81,22 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
+static const char *screenshotcmd[] = { "screenshot.sh", NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *volupcmd[] = { "controle.sh", "vol_up", NULL };
+static const char *voldowncmd[] = { "controle.sh", "vol_down", NULL };
+static const char *mutecmd[] = { "controle.sh", "vol_mute", NULL }; 
+static const char *brightupcmd[] = { "controle.sh", "bright_up", NULL };
+static const char *brightdowncmd[] = { "controle.sh", "bright_down", NULL };
 
 static const Key keys[] = {
+
+    { 0, XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd } },
+    { 0, XF86XK_AudioLowerVolume, spawn, {.v = voldowncmd } },
+    { 0, XF86XK_AudioMute,        spawn, {.v = mutecmd } },
+    { 0, XF86XK_MonBrightnessUp,  spawn, {.v = brightupcmd } },
+    { 0, XF86XK_MonBrightnessDown,spawn, {.v = brightdowncmd } },
+
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
@@ -112,6 +126,8 @@ static const Key keys[] = {
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_0,      defaultgaps,    {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+    { MODKEY|ControlMask,           XK_c,      killclient,     {.ui = 1} },  // kill unselect
+    { MODKEY|ShiftMask|ControlMask, XK_c,      killclient,     {.ui = 2} },  // killall
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
@@ -126,6 +142,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
+    { MODKEY|ShiftMask,             XK_a,      spawn,          {.v = screenshotcmd}},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
