@@ -263,6 +263,9 @@ static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglescratch(const Arg *arg);
+static void sigstatusbar(const Arg *arg);
+static int getstatusbarpid(void);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -291,6 +294,9 @@ static void zoom(const Arg *arg);
 static Systray *systray = NULL;
 static const char broken[] = "broken";
 static char stext[256];
+static char rawstext[256];
+static int statussig;
+static pid_t statuspid = -1;
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh;               /* bar height */
@@ -326,6 +332,8 @@ static Window root, wmcheckwin;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+
+static unsigned int scratchtag = 1 << LENGTH(tags);
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
@@ -503,8 +511,27 @@ buttonpress(XEvent *e)
 			arg.ui = 1 << i;
 		} else if (ev->x < x + TEXTW(selmon->ltsymbol))
 			click = ClkLtSymbol;
-		else if (ev->x > selmon->ww - (int)TEXTW(stext) - getsystraywidth())
+		else if (ev->x > (x = selmon->ww - (int)TEXTW(stext) + lrpad - 4 - getsystraywidth())) {
+			/* statuscmd: descobre em qual bloco do dwmblocks o clique caiu */
+			char *text = rawstext;
+			int j = -1;
+			char ch;
 			click = ClkStatusText;
+			statussig = 0;
+			while (text[++j]) {
+				if ((unsigned char)text[j] < ' ') {
+					ch = text[j];
+					text[j] = '\0';
+					x += TEXTW(text) - lrpad;
+					text[j] = ch;
+					text += j + 1;
+					j = -1;
+					if (x >= ev->x)
+						break;
+					statussig = ch;
+				}
+			}
+		}
 		else
 			click = ClkWinTitle;
 	} else if ((c = wintoclient(ev->window))) {
@@ -1252,6 +1279,15 @@ manage(Window w, XWindowAttributes *wa)
 		applyrules(c);
 	}
 
+	/* scratchpad */
+	selmon->tagset[selmon->seltags] &= ~scratchtag;
+	if (!strcmp(c->name, scratchpadname)) {
+		c->mon->tagset[c->mon->seltags] |= c->tags = scratchtag;
+		c->isfloating = True;
+		c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
+		c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
+	}
+
 	if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
 		c->x = c->mon->wx + c->mon->ww - WIDTH(c);
 	if (c->y + HEIGHT(c) > c->mon->wy + c->mon->wh)
@@ -1939,6 +1975,7 @@ spawn(const Arg *arg)
 
 	if (arg->v == dmenucmd)
 		dmenumon[0] = '0' + selmon->num;
+	selmon->tagset[selmon->seltags] &= ~scratchtag;
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
@@ -2288,8 +2325,16 @@ updatesizehints(Client *c)
 void
 updatestatus(void)
 {
-	if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
+	if (!gettextprop(root, XA_WM_NAME, rawstext, sizeof(rawstext)))
 		strcpy(stext, "dwm-"VERSION);
+	else {
+		/* remove os marcadores de sinal (bytes < ' ') usados pelo statuscmd */
+		char *src = rawstext, *dst = stext;
+		for (; *src; src++)
+			if ((unsigned char)*src >= ' ')
+				*dst++ = *src;
+		*dst = '\0';
+	}
 	drawbar(selmon);
 	updatesystray();
 }
@@ -2577,6 +2622,66 @@ zoom(const Arg *arg)
 	if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
 		return;
 	pop(c);
+}
+
+int
+getstatusbarpid(void)
+{
+	char buf[32], *str = buf, *c;
+	FILE *fp;
+
+	if (statuspid > 0) {
+		snprintf(buf, sizeof(buf), "/proc/%u/cmdline", statuspid);
+		if ((fp = fopen(buf, "r"))) {
+			fgets(buf, sizeof(buf), fp);
+			while ((c = strchr(str, '/')))
+				str = c + 1;
+			fclose(fp);
+			if (!strcmp(str, STATUSBAR))
+				return statuspid;
+		}
+	}
+	if (!(fp = popen("pidof -s "STATUSBAR, "r")))
+		return -1;
+	if (!fgets(buf, sizeof(buf), fp))
+		buf[0] = '\0';
+	pclose(fp);
+	return strtol(buf, NULL, 10);
+}
+
+void
+sigstatusbar(const Arg *arg)
+{
+	union sigval sv;
+
+	if (!statussig)
+		return;
+	if ((statuspid = getstatusbarpid()) <= 0)
+		return;
+	sv.sival_int = (statussig << 8) | arg->i;
+	sigqueue(statuspid, SIGUSR1, sv);
+}
+
+void
+togglescratch(const Arg *arg)
+{
+	Client *c;
+	unsigned int found = 0;
+
+	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
+	if (found) {
+		unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;
+		if (newtagset) {
+			selmon->tagset[selmon->seltags] = newtagset;
+			focus(NULL);
+			arrange(selmon);
+		}
+		if (ISVISIBLE(c)) {
+			focus(c);
+			restack(selmon);
+		}
+	} else
+		spawn(arg);
 }
 
 int
