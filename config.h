@@ -134,6 +134,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_e,      spawn,          SHCMD("dmenu_emoji") },
 	{ MODKEY|ShiftMask,             XK_d,      spawn,          SHCMD("dmenu_display") },  /* monitores */
 	{ MODKEY|ShiftMask,             XK_m,      spawn,          SHCMD("dmenu_mount") },    /* pendrives */
+	{ MODKEY|ShiftMask,             XK_t,      spawn,          SHCMD("tema") },           /* liga/desliga pywal */
 	{ MODKEY|ShiftMask,             XK_a,      spawn,          {.v = screenshotcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = screenshoteditcmd } },
 
