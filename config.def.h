@@ -202,6 +202,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 
 	/* sistema */
+	{ MODKEY,                       XK_F1,     spawn,          SHCMD("cheats --menu") },  /* cheat sheets */
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
 	{ MODKEY|ShiftMask,             XK_q,      spawn,          SHCMD("dmenu_power") },  /* menu de energia (inclui sair) */
 	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} },  /* reinicia o dwm */
