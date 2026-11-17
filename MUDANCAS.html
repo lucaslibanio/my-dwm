@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DWM — mudanças e atalhos</title>
+<style>
+  :root{
+    --bg:#1b1b1b; --panel:#222222; --line:#333; --fg:#e8e6e3; --mut:#9a9690;
+    --sel:#505050; --acc:#d79921; --ok:#98971a; --warn:#d65d0e;
+    --mono:"Ubuntu Mono","JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:0;background:var(--panel);font-family:var(--mono);font-size:15px;border-bottom:1px solid #000}
+  .bar a{color:var(--fg);text-decoration:none;padding:6px 12px}
+  .bar a:hover{background:var(--sel)}
+  .bar .lt{color:var(--mut);padding:6px 10px}
+  .bar .title{flex:1;background:var(--sel);padding:6px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .st{padding:6px 12px;color:var(--mut);white-space:nowrap}
+  main{max-width:980px;margin:0 auto;padding:28px 20px 80px}
+  h1{font-family:var(--mono);font-size:30px;margin:6px 0 4px;letter-spacing:-.3px}
+  h1 span{color:var(--acc)}
+  .lead{color:var(--mut);margin:0 0 26px}
+  h2{font-family:var(--mono);font-size:20px;margin:42px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--acc);display:inline-block}
+  h3{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin:26px 0 8px}
+  p{margin:8px 0}
+  code{font-family:var(--mono);background:#2b2b2b;padding:1px 5px;border-radius:3px;font-size:.95em}
+  pre{font-family:var(--mono);background:#141414;border:1px solid var(--line);border-left:3px solid var(--acc);padding:12px 14px;overflow:auto;border-radius:4px;font-size:14.5px;line-height:1.5}
+  kbd{font-family:var(--mono);font-size:13.5px;background:#2e2e2e;border:1px solid #444;border-bottom-width:2px;border-radius:4px;padding:1px 6px;white-space:nowrap;color:#fff}
+  .plus{color:var(--mut);margin:0 2px}
+  .callout{background:#2a2316;border:1px solid #5a4516;border-radius:6px;padding:12px 16px;margin:14px 0}
+  .callout b{color:var(--acc)}
+  ol.steps{counter-reset:s;list-style:none;padding:0}
+  ol.steps>li{counter-increment:s;position:relative;padding:4px 0 10px 40px}
+  ol.steps>li::before{content:counter(s);position:absolute;left:0;top:4px;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#111;font:700 14px/26px var(--mono);text-align:center}
+  .search{display:flex;gap:10px;align-items:center;margin:6px 0 10px}
+  .search input{flex:1;background:#141414;border:1px solid var(--line);color:var(--fg);padding:9px 12px;border-radius:5px;font:15px var(--mono)}
+  .search input:focus{outline:none;border-color:var(--acc)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .chip{background:transparent;border:1px solid var(--line);color:var(--mut);border-radius:20px;padding:3px 11px;font:13px var(--mono);cursor:pointer}
+  .chip.on{border-color:var(--acc);color:var(--acc)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{text-align:left;color:var(--mut);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--line)}
+  td{padding:7px 8px;border-bottom:1px solid #2a2a2a;vertical-align:top}
+  td:first-child{width:44%}
+  tr.grp td{padding-top:20px;border-bottom:1px solid var(--line);font:700 13px var(--mono);color:var(--acc);text-transform:uppercase;letter-spacing:.08em}
+  .new{font:700 11px var(--mono);color:#111;background:var(--ok);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+  .chg{font:700 11px var(--mono);color:#111;background:var(--acc);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+  .empty{color:var(--mut);padding:14px 8px;display:none}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:720px){.grid2{grid-template-columns:1fr} td:first-child{width:auto}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+  .card h4{margin:0 0 6px;font-family:var(--mono);font-size:15px}
+  .card ul{margin:6px 0 0;padding-left:18px}
+  .card li{margin:3px 0}
+  .diff{font-family:var(--mono);font-size:14px}
+  .diff .m{color:#fb4934}.diff .p{color:#b8bb26}
+  .statusdemo{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:5px;display:flex;flex-wrap:wrap;margin:10px 0}
+  .statusdemo span{padding:6px 10px;border-right:1px solid #2d2d2d}
+  .statusdemo span:hover{background:var(--sel)}
+  ul.tight li{margin:4px 0}
+  footer{margin-top:50px;color:var(--mut);font-size:14px}
+</style>
+</head>
+<body>
+<nav class="bar" aria-label="Seções">
+  <a href="#instalar">1</a><a href="#atalhos">2</a><a href="#barra">3</a><a href="#mudancas">4</a><a href="#manual">5</a>
+  <span class="lt">[]=</span>
+  <span class="title">~/.source — dwm · dwmblocks · dmenu</span>
+  <span class="st">Vol: 60% | Bat: ⚡84% | ter 17 nov 18:50</span>
+</nav>
+
+<main>
+<h1>Seu DWM, <span>revisado</span></h1>
+<p class="lead">O que mudou em <code>~/.source</code>, como instalar e todos os atalhos novos. A maior mudança: a tecla principal agora é <kbd>Super</kbd> (a tecla Windows), não mais <kbd>Alt</kbd>.</p>
+
+<h2 id="instalar">1. Instalar</h2>
+<p>As mudanças já estão nos arquivos e commitadas no git, mas ainda não foram instaladas no sistema.</p>
+<ol class="steps">
+  <li>Compile e instale os três programas:
+<pre>cd ~/.source/my-dwm    &amp;&amp; sudo make clean install
+cd ~/.source/dwmblocks &amp;&amp; sudo make clean install
+cd ~/.source/dmenu     &amp;&amp; sudo make clean install</pre></li>
+  <li>Reinicie o dwm com o atalho <b>antigo</b>, porque o dwm em execução ainda usa Alt: <kbd>Alt</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>Q</kbd>. As janelas abertas são mantidas.</li>
+  <li>Reinicie a barra de status:
+<pre>pkill dwmblocks; setsid -f dwmblocks</pre></li>
+  <li>A partir daqui, use <kbd>Super</kbd> para tudo. Para reiniciar no futuro: <kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>Q</kbd>.</li>
+</ol>
+<div class="callout"><b>Para desfazer:</b> cada repositório tem as mudanças em commits próprios. Use <code>git log</code> para vê-las e <code>git revert HEAD</code> (ou <code>git checkout &lt;commit&gt; -- config.h</code>) para voltar atrás. Depois, recompile.</div>
+
+<h2 id="atalhos">2. Atalhos</h2>
+<div class="search">
+  <input id="q" type="search" placeholder="Filtrar: “layout”, “volume”, “j”…" aria-label="Filtrar atalhos">
+</div>
+<div class="chips" id="chips">
+  <button class="chip on" data-f="all">todos</button>
+  <button class="chip" data-f="new">só novos/alterados</button>
+</div>
+<table id="keys">
+  <thead><tr><th>Tecla</th><th>O que faz</th></tr></thead>
+  <tbody></tbody>
+</table>
+<div class="empty" id="empty">Nenhum atalho encontrado.</div>
+
+<h2 id="barra">3. Barra de status clicável</h2>
+<p>Agora o dwm repassa os cliques na barra de status para o dwmblocks (patch <b>statuscmd</b>). Cada bloco é um script em <code>~/.source/dwmblocks/scripts/</code> que recebe o botão do mouse na variável <code>$BLOCK_BUTTON</code>.</p>
+<div class="statusdemo"><span>Vol: 60%</span><span>Bri: 70%</span><span>Bat: ⚡84%</span><span>Mem: 3.1G/15G</span><span>ter 17 nov 18:50</span></div>
+<table>
+  <thead><tr><th>Bloco (sinal)</th><th>Clique</th></tr></thead>
+  <tbody>
+    <tr><td><code>volume.sh</code> (1)</td><td>esquerdo: mudo · direito: pavucontrol · rolar: +/− volume</td></tr>
+    <tr><td><code>brightness.sh</code> (2)</td><td>rolar: +/− brilho</td></tr>
+    <tr><td><code>battery_status.sh</code> (3)</td><td>esquerdo: notificação com estado e %. Mostra ⚡ quando está carregando.</td></tr>
+    <tr><td><code>memory.sh</code> (4)</td><td>esquerdo: os 5 processos que mais usam memória</td></tr>
+    <tr><td><code>clock.sh</code> (5)</td><td>esquerdo: calendário do mês. Agora em 24h e em português.</td></tr>
+  </tbody>
+</table>
+<p>As teclas de volume e brilho chamam o seu <code>controle.sh</code> e logo depois rodam <code>pkill -RTMIN+1 dwmblocks</code> (ou <code>+2</code>), então a barra atualiza na hora. Volume e brilho não são mais consultados a cada segundo, só quando você muda.</p>
+<p>Rolar o mouse sobre o símbolo do layout (<code>[]=</code>) também troca de layout.</p>
+
+<h2 id="mudancas">4. O que mudou</h2>
+
+<h3>my-dwm · config.h</h3>
+<div class="grid2">
+  <div class="card"><h4>Aparência</h4><ul>
+    <li><b>Borda de 2px</b> com destaque <code style="color:#d79921">#d79921</code> na janela em foco (antes era 0px, sem indicação de foco).</li>
+    <li><b>Espaçamentos uniformes</b> de 10 em todos os lados (antes eram 20/10/10/30).</li>
+    <li><code>resizehints = 0</code>: o st não deixa mais faixas vazias nas bordas.</li>
+    <li><b>Fonte</b> corrigida para o nome do fontconfig (<code>Ubuntu Mono:style=Italic</code>), com <code>Symbols Nerd Font</code> como fallback para ícones.</li>
+  </ul></div>
+  <div class="card"><h4>Comportamento</h4><ul>
+    <li><b>MODKEY = Super</b>. Acabam os conflitos com Alt+b/d/f do terminal e do navegador. Os espaçamentos foram para <kbd>Super</kbd>+<kbd>Alt</kbd>.</li>
+    <li><b>dmenu</b> abre no monitor atual e com as mesmas cores da barra, que seguem o Xresources ao apertar <kbd>Super</kbd>+<kbd>F5</kbd>.</li>
+    <li><b>Regras:</b> <code>firefox</code>, <code>LibreWolf</code> e <code>waterfox</code> abrem na tag 9. A regra do Dunst foi removida, porque não fazia nada.</li>
+  </ul></div>
+</div>
+
+<h3>my-dwm · patches novos</h3>
+<div class="grid2">
+  <div class="card"><h4>scratchpad</h4><p>Um terminal flutuante e centralizado que aparece e some com <kbd>Super</kbd>+<kbd>`</kbd>. Ele continua aberto enquanto está escondido.</p></div>
+  <div class="card"><h4>movestack</h4><p><kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd>/<kbd>K</kbd> move a janela para baixo ou para cima na pilha.</p></div>
+  <div class="card"><h4>cyclelayouts</h4><p><kbd>Super</kbd>+<kbd>Ctrl</kbd>+<kbd>,</kbd>/<kbd>.</kbd> percorre os 14 layouts, inclusive os 9 que não tinham atalho.</p></div>
+  <div class="card"><h4>actualfullscreen</h4><p><kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> põe qualquer janela em tela cheia de verdade, sem barra e sem bordas.</p></div>
+  <div class="card"><h4>statuscmd</h4><p>Blocos da barra clicáveis (veja a seção 3). Implementado em <code>dwm.c</code> e em <code>dwmblocks.c</code>.</p></div>
+  <div class="card"><h4>Organização do repositório</h4><p>Os patches systray e bulkill foram commitados. As sobras <code>*.rej</code>/<code>*.orig</code> foram apagadas, o <code>.gitignore</code> foi criado e o <code>config.h</code> agora é rastreado.</p></div>
+</div>
+<p>Os três primeiros patches estão em <code>extras.c</code>, incluído pelo <code>config.h</code>. O scratchpad e o statuscmd estão em <code>dwm.c</code>.</p>
+
+<h3>dwmblocks</h3>
+<pre class="diff"><span class="m">- Mem | data em 12h e inglês (a cada 5s) | Bat sem estado</span>
+<span class="p">+ Vol | Bri | Bat (⚡) | Mem | data em 24h e português (a cada 10s)</span></pre>
+<p>Os scripts novos são <code>volume.sh</code>, <code>brightness.sh</code>, <code>memory.sh</code> e <code>clock.sh</code>. O <code>CMDLENGTH</code> subiu de 50 para 60.</p>
+
+<h3>dmenu</h3>
+<p>A fonte foi corrigida para <code>Ubuntu Mono:style=Italic:size=16</code>. As cores vêm do dwm pela linha de comando.</p>
+
+<h2 id="manual">5. Para conferir e fazer à mão</h2>
+<ul class="tight">
+  <li><b>Pacotes que os atalhos e scripts novos usam:</b>
+<pre>sudo pacman -S --needed playerctl libpulse pavucontrol libnotify ttf-nerd-fonts-symbols</pre>
+  <code>libpulse</code> fornece o <code>pactl</code>, que também funciona com o PipeWire.</li>
+  <li><b>Data em português:</b> precisa do locale <code>pt_BR.UTF-8</code>. Descomente a linha dele em <code>/etc/locale.gen</code> e rode <code>sudo locale-gen</code>. Sem isso, a data aparece em inglês, mas já em 24h.</li>
+  <li><b>Fonte:</b> confira o nome exato com <code>fc-list | grep -i ubuntumono</code>. Se o estilo não for <code>Italic</code>, ajuste em <code>config.h</code> no dwm e no dmenu.</li>
+  <li><b>Bloquear ao suspender:</b> adicione ao <code>~/.xinitrc</code>, antes do <code>exec dwm</code>:
+<pre>xss-lock -- slock &amp;</pre>
+  Isso não foi alterado, porque o arquivo fica fora de <code>~/.source</code>.</li>
+  <li><b>Super+P em notebooks Lenovo:</b> a tecla Fn de trocar de tela pode mandar exatamente <kbd>Super</kbd>+<kbd>P</kbd>, o que abriria o dmenu. Se isso incomodar, troque o atalho do dmenu para <code>XK_d</code> e mova o <code>incnmaster −1</code> para outra tecla.</li>
+  <li><b>Gerenciador de arquivos:</b> <kbd>Super</kbd>+<kbd>E</kbd> roda <code>xdg-open ~</code>, que abre o gerenciador padrão do sistema. Para usar outro, troque <code>FILEMGRCMD</code> no <code>config.h</code>.</li>
+  <li><b>Navegador na tag 9:</b> se preferir o navegador abrindo na tag atual, apague as três regras em <code>rules[]</code>.</li>
+</ul>
+
+<footer>Gerado a partir de <code>~/.source</code>. Este arquivo também está salvo em <code>~/.source/my-dwm/MUDANCAS.html</code>.</footer>
+</main>
+
+<script>
+const K = (...k) => k.map(x => `<kbd>${x}</kbd>`).join('<span class="plus">+</span>');
+const S = 'Super';
+const rows = [
+  ['g','Programas'],
+  [K(S,'P'),'dmenu (abre no monitor atual)','chg'],
+  [K(S,'Shift','Enter'),'Terminal (st)'],
+  [K(S,'W'),'Navegador (LibreWolf)','new'],
+  [K(S,'E'),'Gerenciador de arquivos (xdg-open ~)','new'],
+  [K(S,'`'),'Scratchpad: terminal flutuante que aparece e some','new'],
+  [K(S,'Shift','L'),'Bloquear tela (slock)'],
+  [K(S,'Shift','A'),'Screenshot'],
+  [K(S,'Shift','S'),'Screenshot com edição (satty)'],
+
+  ['g','Janelas'],
+  [K(S,'J')+' / '+K(S,'K'),'Focar a próxima / anterior janela'],
+  [K(S,'Shift','J')+' / '+K(S,'Shift','K'),'Mover a janela para baixo / cima na pilha','new'],
+  [K(S,'Enter'),'Trocar a janela com a principal (zoom)'],
+  [K(S,'H')+' / '+K(S,'L'),'Diminuir / aumentar a área principal'],
+  [K(S,'I')+' / '+K(S,'D'),'Mais / menos janelas na área principal'],
+  [K(S,'Shift','F'),'Tela cheia de verdade','new'],
+  [K(S,'Shift','Espaço'),'Alternar flutuante'],
+  [K(S,'B'),'Mostrar / esconder a barra'],
+  [K(S,'Shift','C'),'Fechar janela'],
+  [K(S,'Ctrl','C'),'Fechar as outras janelas da tag'],
+  [K(S,'Ctrl','Shift','C'),'Fechar todas as janelas da tag'],
+
+  ['g','Layouts'],
+  [K(S,'T'),'Tile []='],
+  [K(S,'F'),'Monocle [M]'],
+  [K(S,'R'),'Dwindle [\\]'],
+  [K(S,'Q'),'Grade em linhas ###'],
+  [K(S,'M'),'Mestre centralizado |M|'],
+  [K(S,'Ctrl',',')+' / '+K(S,'Ctrl','.'),'Layout anterior / próximo (todos os 14)','new'],
+  [K(S,'Espaço'),'Voltar ao layout anterior'],
+
+  ['g','Tags e monitores'],
+  [K(S,'1–9'),'Ver a tag'],
+  [K(S,'Shift','1–9'),'Mandar a janela para a tag'],
+  [K(S,'Ctrl','1–9'),'Mostrar / esconder a tag junto com a atual'],
+  [K(S,'Ctrl','Shift','1–9'),'Colocar / tirar a janela da tag'],
+  [K(S,'0')+' · '+K(S,'Shift','0'),'Ver todas as tags · janela em todas as tags'],
+  [K(S,'Tab'),'Voltar à tag anterior'],
+  [K(S,',')+' / '+K(S,'.'),'Focar o monitor anterior / próximo'],
+  [K(S,'Shift',',')+' / '+K(S,'Shift','.'),'Mandar a janela para o outro monitor'],
+
+  ['g','Espaçamentos (agora com Super+Alt)'],
+  [K(S,'Alt','U')+' · '+K(S,'Alt','Shift','U'),'Todos os espaçamentos + / −','chg'],
+  [K(S,'Alt','I')+' · '+K(S,'Alt','Shift','I'),'Espaçamentos internos + / −','chg'],
+  [K(S,'Alt','O')+' · '+K(S,'Alt','Shift','O'),'Espaçamentos externos + / −','chg'],
+  [K(S,'Alt','6 / 7')+' (+Shift)','Interno horizontal / vertical','chg'],
+  [K(S,'Alt','8 / 9')+' (+Shift)','Externo horizontal / vertical','chg'],
+  [K(S,'Alt','0'),'Ligar / desligar espaçamentos','chg'],
+  [K(S,'Alt','Shift','0'),'Voltar aos espaçamentos padrão','chg'],
+
+  ['g','Mídia'],
+  [K('Vol+')+' '+K('Vol−')+' '+K('Mudo'),'Volume (atualiza a barra na hora)','chg'],
+  [K('Brilho+')+' '+K('Brilho−'),'Brilho (atualiza a barra na hora)','chg'],
+  [K('Mic mudo'),'Silenciar o microfone','new'],
+  [K('Play')+' '+K('Próx')+' '+K('Ant'),'Controle de mídia (playerctl)','new'],
+
+  ['g','Mouse'],
+  [K(S,'arrastar esq.'),'Mover janela'],
+  [K(S,'arrastar dir.'),'Redimensionar janela'],
+  [K(S,'clique do meio'),'Alternar flutuante'],
+  [K('rolar no símbolo do layout'),'Trocar de layout','new'],
+  [K('clicar/rolar na barra de status'),'Ação do bloco (veja a seção 3)','new'],
+
+  ['g','Sistema'],
+  [K(S,'F5'),'Recarregar cores do Xresources'],
+  [K(S,'Shift','Q'),'Sair do dwm'],
+  [K(S,'Ctrl','Shift','Q'),'Reiniciar o dwm (mantém as janelas)'],
+];
+const tb = document.querySelector('#keys tbody');
+tb.innerHTML = rows.map(r => r[0]==='g'
+  ? `<tr class="grp"><td colspan="2">${r[1]}</td></tr>`
+  : `<tr data-new="${r[2]?1:0}"><td>${r[0]}</td><td>${r[1]}${r[2]==='new'?'<span class="new">NOVO</span>':r[2]==='chg'?'<span class="chg">MUDOU</span>':''}</td></tr>`).join('');
+let onlyNew = false;
+function filter(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  let shown = 0, grp = null, grpHas = false;
+  const trs = [...tb.rows];
+  const flush = () => { if (grp) grp.style.display = grpHas ? '' : 'none'; };
+  trs.forEach(tr => {
+    if (tr.classList.contains('grp')) { flush(); grp = tr; grpHas = false; return; }
+    const ok = (!onlyNew || tr.dataset.new === '1') && (!q || tr.textContent.toLowerCase().includes(q));
+    tr.style.display = ok ? '' : 'none';
+    if (ok) { shown++; grpHas = true; }
+  });
+  flush();
+  document.getElementById('empty').style.display = shown ? 'none' : 'block';
+}
+document.getElementById('q').addEventListener('input', filter);
+document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  b.classList.add('on'); onlyNew = b.dataset.f === 'new'; filter();
+}));
+</script>
+</body>
+</html>
