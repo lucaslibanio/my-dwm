@@ -95,7 +95,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
+static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont,
 	"-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *screenshotcmd[] = { "screenshot_satty.sh", NULL };
 static const char *screenshoteditcmd[] = { "screenshot_satty.sh", "-e", NULL };
@@ -131,6 +131,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_e,      spawn,          FILEMGRCMD },
 	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
+	{ MODKEY|ShiftMask,             XK_e,      spawn,          SHCMD("dmenu_emoji") },
 	{ MODKEY|ShiftMask,             XK_a,      spawn,          {.v = screenshotcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = screenshoteditcmd } },
 
@@ -199,7 +200,7 @@ static const Key keys[] = {
 
 	/* sistema */
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_q,      spawn,          SHCMD("dmenu_power") },  /* menu de energia (inclui sair) */
 	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} },  /* reinicia o dwm */
 };
 
