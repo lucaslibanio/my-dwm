@@ -132,6 +132,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
 	{ MODKEY|ShiftMask,             XK_e,      spawn,          SHCMD("dmenu_emoji") },
+	{ MODKEY|ShiftMask,             XK_d,      spawn,          SHCMD("dmenu_display") },  /* monitores */
+	{ MODKEY|ShiftMask,             XK_m,      spawn,          SHCMD("dmenu_mount") },    /* pendrives */
 	{ MODKEY|ShiftMask,             XK_a,      spawn,          {.v = screenshotcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = screenshoteditcmd } },
 
