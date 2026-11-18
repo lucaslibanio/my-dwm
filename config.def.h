@@ -18,13 +18,13 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 /* nomes de família do fontconfig (confira com `fc-list | grep -i ubuntumono`);
  * a segunda fonte é usada como fallback para ícones */
-static const char *fonts[]          = { "Ubuntu Mono:style=Italic:size=16", "Symbols Nerd Font:size=14" };
-static const char dmenufont[]       = "Ubuntu Mono:style=Italic:size=16";
+static const char *fonts[]          = { "FiraCode Nerd Font Mono:size=12", "Symbols Nerd Font:size=14" };
+static const char dmenufont[]       = "FiraCode Nerd Font Mono:size=12";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#ffffff";
 static char selfgcolor[]            = "#ffffff";
-static char selbordercolor[]        = "#d79921";
+static char selbordercolor[]        = "#a89984";
 static char selbgcolor[]            = "#505050";
 static char *colors[][3] = {
        /*               fg           bg           border   */
@@ -135,6 +135,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_d,      spawn,          SHCMD("dmenu_display") },  /* monitores */
 	{ MODKEY|ShiftMask,             XK_m,      spawn,          SHCMD("dmenu_mount") },    /* pendrives */
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          SHCMD("tema") },           /* liga/desliga pywal */
+	{ MODKEY|ALTKEY,                XK_k,      spawn,          SHCMD("layout_change.sh") }, /* teclado ABNT2 <-> US intl */
 	{ MODKEY|ShiftMask,             XK_a,      spawn,          {.v = screenshotcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = screenshoteditcmd } },
 
