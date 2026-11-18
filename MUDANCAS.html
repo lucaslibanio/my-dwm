@@ -132,7 +132,7 @@ cd ~/.source/dmenu     &amp;&amp; sudo make clean install</pre></li>
   <div class="card"><h4>Comportamento</h4><ul>
     <li><b>MODKEY = Super</b>. Acabam os conflitos com Alt+b/d/f do terminal e do navegador. Os espaçamentos foram para <kbd>Super</kbd>+<kbd>Alt</kbd>.</li>
     <li><b>dmenu</b> abre no monitor atual e com as mesmas cores da barra, que seguem o Xresources ao apertar <kbd>Super</kbd>+<kbd>F5</kbd>.</li>
-    <li><b>Regras:</b> <code>firefox</code>, <code>LibreWolf</code> e <code>waterfox</code> abrem na tag 9. A regra do Dunst foi removida, porque não fazia nada.</li>
+    <li><b>Regras:</b> só a do Gimp (flutuante). Os navegadores abrem na tag atual. A regra do Dunst foi removida, porque não fazia nada.</li>
   </ul></div>
 </div>
 
@@ -167,7 +167,6 @@ cd ~/.source/dmenu     &amp;&amp; sudo make clean install</pre></li>
   Isso não foi alterado, porque o arquivo fica fora de <code>~/.source</code>.</li>
   <li><b>Super+P em notebooks Lenovo:</b> a tecla Fn de trocar de tela pode mandar exatamente <kbd>Super</kbd>+<kbd>P</kbd>, o que abriria o dmenu. Se isso incomodar, troque o atalho do dmenu para <code>XK_d</code> e mova o <code>incnmaster −1</code> para outra tecla.</li>
   <li><b>Gerenciador de arquivos:</b> <kbd>Super</kbd>+<kbd>E</kbd> roda <code>xdg-open ~</code>, que abre o gerenciador padrão do sistema. Para usar outro, troque <code>FILEMGRCMD</code> no <code>config.h</code>.</li>
-  <li><b>Navegador na tag 9:</b> se preferir o navegador abrindo na tag atual, apague as três regras em <code>rules[]</code>.</li>
 </ul>
 
 <footer>Gerado a partir de <code>~/.source</code>. Este arquivo também está salvo em <code>~/.source/my-dwm/MUDANCAS.html</code>.</footer>
