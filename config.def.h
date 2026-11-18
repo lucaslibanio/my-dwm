@@ -129,7 +129,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
 	{ MODKEY,                       XK_e,      spawn,          FILEMGRCMD },
-	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	/* scratchpad: tecla à esquerda do 1 (' no ABNT2, ` no US e acento morto no US intl) */
+	{ MODKEY,                       XK_apostrophe, togglescratch, {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_grave,      togglescratch, {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_dead_grave, togglescratch, {.v = scratchpadcmd } },
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
 	{ MODKEY|ShiftMask,             XK_e,      spawn,          SHCMD("dmenu_emoji") },
 	{ MODKEY|ShiftMask,             XK_d,      spawn,          SHCMD("dmenu_display") },  /* monitores */
