@@ -125,6 +125,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
+	{ MODKEY,                       XK_o,      spawn,          SHCMD("tmux-sessionizer") },  /* projeto no tmux */
 	{ MODKEY,                       XK_e,      spawn,          FILEMGRCMD },
 	/* scratchpad: tecla à esquerda do 1 (' no ABNT2, ` no US e acento morto no US intl) */
 	{ MODKEY,                       XK_apostrophe, togglescratch, {.v = scratchpadcmd } },
